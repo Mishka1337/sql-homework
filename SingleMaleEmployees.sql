@@ -4,7 +4,7 @@ CREATE PROCEDURE HumanResources.Bachelors (
   @count AS int OUTPUT
 )
 AS
-  SELECT p.FirstName,p.LastName, e.* INTO #bachelors --наверно это не очень хорошо
+  SELECT p.FirstName,p.LastName, e.*
   FROM HumanResources.Employee as e
   JOIN Person.Person as p
     ON p.BusinessEntityID = e.BusinessEntityID
@@ -12,8 +12,7 @@ AS
       AND e.MaritalStatus = 'S'
       AND e.BirthDate BETWEEN @fromDate AND @toDate
 
-  SELECT @count = COUNT(*) FROM #bachelors           --и это
-  SELECT * FROM #bachelors                           --и это тоже  
+  SELECT @count = @@ROWCOUNT
 GO
 
 DECLARE @counts int

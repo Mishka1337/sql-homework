@@ -27,10 +27,10 @@ SELECT soh1.CustomerID              --этот ужас ли для того,
       ,soh1.rowguid
       ,soh1.ModifiedDate
 FROM Sales.SalesOrderHeader as soh1
-WHERE soh1.SalesOrderID IN (           --не самый лучший approach, но рабочий
-        SELECT TOP(1) soh.SalesOrderID
-        FROM Sales.SalesOrderHeader as soh
-        WHERE soh.CustomerID = soh1.CustomerID
-        ORDER BY soh.OrderDate)
+INNER JOIN (
+    SELECT soh.CustomerID,MIN(soh.OrderDate) as OrderDate --без correlated subquery
+    FROM Sales.SalesOrderHeader as soh                    --выведет больше результатов,
+    GROUP BY soh.CustomerID) as CustmerFirstOrderDates    --т.к. у некоторых пользвователей
+  ON CustmerFirstOrderDates.CustomerID = soh1.CustomerID  --есть два "первых" заказа
+    AND CustmerFirstOrderDates.OrderDate = soh1.OrderDate
 ORDER BY soh1.CustomerID
-    
